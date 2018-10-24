@@ -11,7 +11,7 @@ Usage
                 var simpleAdapter: KotlinAdapter<Menu> = KAdapter(R.layout.menu_list) {
 
                    bindData { type, vh, data ->
-                       vh.bindView<TextView>(R.id.tv_title).text = data.name
+                        vh.itemView.tv_title.text = data.name
                    }
                 }
 
@@ -25,7 +25,7 @@ Usage
                   }
 
                   bindData { vh, data ->
-                      vh.bindView<TextView>(R.id.tv_item).text = data.name
+                      vh.itemView.tv_text.text = data.name
                   }
               }
       
@@ -44,7 +44,7 @@ Usage
           }
 
           bindData { vh, data ->
-              vh.bindView<TextView>(R.id.tv_item).text = data.name
+               vh.itemView.tv_text.text = data.name
           }
       }
       
@@ -63,7 +63,7 @@ Usage
           }
 
           bindData { vh, data ->
-              vh.bindView<TextView>(R.id.tv_item).text = data.name
+               vh.itemView.tv_text.text = data.name
           }
           
           header(R.layout.header){
@@ -99,8 +99,8 @@ Usage
 
             bindData { type, vh, data ->
                 when (type) {
-                    R.layout.list_item -> vh.bindView<TextView>(R.id.tv_title).text = data.name
-                    R.layout.list_item2 -> vh.bindView<TextView>(R.id.tv_title).text = data.name
+                    R.layout.list_item ->  vh.itemView.tv_text.text = data.name
+                    R.layout.list_item2 ->  vh.itemView.tv_text.text = data.name
                 }
             }
        }

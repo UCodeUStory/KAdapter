@@ -1,10 +1,12 @@
 package com.ustory.koinsample.Adapter
 
+import android.widget.Button
 import android.widget.TextView
 import com.ustory.kadapterdemo.Menu
 import com.ustory.kadapterdemo.Person
 import com.ustory.kadapterdemo.R
 import com.ustory.koinsample.Adapter.KAdapterFactory.KAdapter
+import kotlinx.android.synthetic.main.menu_list.view.*
 
 
 /**
@@ -20,7 +22,7 @@ var menuAdapter: KotlinAdapter<Menu> = KAdapter {
     }
 
     bindData { type, vh, data ->
-        vh.bindView<TextView>(R.id.tv_title).text = data.name
+        vh.itemView.tv_title.text = data.name
     }
 
 

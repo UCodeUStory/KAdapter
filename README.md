@@ -6,21 +6,31 @@ Usage
 
 1. 创建
 
-      // 最简单创建
+      - 1. 最简单创建
+
+                var simpleAdapter: KotlinAdapter<Menu> = KAdapter(R.layout.menu_list) {
+
+                   bindData { type, vh, data ->
+                       vh.bindView<TextView>(R.id.tv_title).text = data.name
+                   }
+                }
+
+
+      或
+
+
+              var myAdapter: KotlinAdapter<Person> = KAdapter {
+                  layout {
+                      R.layout.list_item
+                  }
+
+                  bindData { vh, data ->
+                      vh.bindView<TextView>(R.id.tv_item).text = data.name
+                  }
+              }
       
       
-      var myAdapter: KotlinAdapter<Person> = KAdapter {
-          layout {
-              R.layout.list_item
-          }
-          
-          bindData { vh, data ->
-              vh.bindView<TextView>(R.id.tv_item).text = data.name
-          }
-      }
-      
-      
-      // 带数据创建
+      - 2. 带数据创建
       
       
        var myAdapter: KotlinAdapter<Person> = KAdapter {
@@ -39,7 +49,7 @@ Usage
       }
       
       
-      // 带header footer创建
+      - 3. 带header footer创建
       
       
        var myAdapter: KotlinAdapter<Person> = KAdapter {
@@ -65,12 +75,42 @@ Usage
           }
       }
 
+      - 4. 多类型布局
+
+
+       var mutilAdapter: KotlinAdapter<Menu> = KAdapterFactory.KAdapter {
+
+            multiLayout {
+                layout {
+                    R.layout.list_item
+                }
+                layout {
+                    R.layout.list_item2
+                }
+            }
+
+            dataWithType {
+
+                var mDataWithTypes: MutableMap<Int, Menu> = mutableMapOf()
+                mDataWithTypes.put(R.layout.list_item, Menu("菜单1"))
+                mDataWithTypes.put(R.layout.list_item2, Menu("菜单2"))
+                mDataWithTypes
+            }
+
+            bindData { type, vh, data ->
+                when (type) {
+                    R.layout.list_item -> vh.bindView<TextView>(R.id.tv_title).text = data.name
+                    R.layout.list_item2 -> vh.bindView<TextView>(R.id.tv_title).text = data.name
+                }
+            }
+       }
+
 
 2. 使用
       
         1. 直接使用
         
-        
+           //设置点击事件
            myAdapter.onItemClick { position, view -> Toast.makeText(this, "position=" + position, Toast.LENGTH_SHORT).show() }
            myAdapter into recyclerView
         

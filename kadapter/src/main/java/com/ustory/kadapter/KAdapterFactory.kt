@@ -13,4 +13,11 @@ object KAdapterFactory {
         return resultAdapter
     }
 
+    inline fun <reified T> KAdapter(layoutId:Int,body: KotlinAdapter<T>.() -> Unit): KotlinAdapter<T> {
+        val adapter = object : KotlinAdapter<T>(){}
+        var resultAdapter = adapter as KotlinAdapter<T>
+        resultAdapter.layout { layoutId }
+        return resultAdapter
+    }
+
 }

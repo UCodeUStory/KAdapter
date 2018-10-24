@@ -1,6 +1,5 @@
 package com.ustory.koinsample.Adapter
 
-import android.app.Activity
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -8,20 +7,88 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import java.util.*
+import com.ustory.kadapter.MultiLayoutCreater
+import java.lang.ref.WeakReference
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>() {
 
+    /**
+     * 添加单个布局
+     */
     fun layout(layoutId: () -> Int) {
         mLayout = layoutId()
     }
 
+
+    /**
+     * 添加单个布局
+     */
+    fun singleLayout(layoutId: () -> Int) {
+        mLayout = layoutId()
+        mLayoutIds.put(mLayout, mLayout)
+    }
+
+    /**
+     * 批量添加一个map
+     */
+    fun multiLayout(layoutIds: MutableMap<Int, Int>) {
+        mLayoutIds = layoutIds
+    }
+
+    /**
+     * 默认以id为类型key 批量添加
+     */
+    fun multiLayout(layoutIds: ArrayList<Int>) {
+        layoutIds.forEach {
+            mLayoutIds.put(it, it)
+        }
+    }
+
+    /**
+     * 默认以id为类型key
+     */
+    fun multiLayout(initLayout: MultiLayoutCreater.() -> Unit) {
+        val creator = MultiLayoutCreater()
+        creator.initLayout()
+        var firstKey = creator.getValue().keys.first()
+        mLayout = creator.getValue().get(firstKey)!!
+        mLayoutIds = creator.getValue()
+    }
+
+
+    /**
+     * 添加带类型的数据
+     */
+    fun dataWithType(datasFun: () -> MutableMap<Int, T>) {
+        mDataWithTypes = datasFun()
+        mDataWithTypes.forEach { key, data ->
+            mTypes.add(key)
+            mDatas.add(data)
+        }
+    }
+
+    /**
+     * 仅更新数据，如果和类型数据不设置，默认用最后一个设置的layout
+     */
     fun data(datas: () -> ArrayList<*>) {
         mDatas = datas() as ArrayList<T>
     }
 
-    fun bindData(bind: (vh: ViewHolder, data: T) -> Unit) {
+    /**
+     * 仅更新类型，如果和数据数量不一致会有问题
+     */
+    fun type(types: () -> ArrayList<Int>) {
+        mDatas ?: error("请先初始化数据")
+        mTypes = types()
+        for (i in mTypes.indices) {
+            mDataWithTypes.put(mTypes[i], mDatas[i])
+        }
+    }
+
+    fun bindData(bind: (type: Int, vh: ViewHolder, data: T) -> Unit) {
         mBind = bind
     }
 
@@ -69,31 +136,34 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     private var mDatas: ArrayList<T> = arrayListOf()
 
-    private var mHeaderView: View? = null
+    private var mHeaderView: WeakReference<View>? = null
 
     private var mHeaderLayoutId: Int? = null
 
-    private var mFooterView: View? = null
+    private var mFooterView: WeakReference<View>? = null
 
     private var mFooterLayoutId: Int? = null
 
-    private lateinit var mBind: ((vh: ViewHolder, data: T) -> Unit?)
+    private lateinit var mBind: ((type: Int, vh: ViewHolder, data: T) -> Unit?)
 
     private lateinit var mBindHeader: (view: View) -> Unit
 
     private lateinit var mBindFooter: (view: View) -> Unit
 
     lateinit var layoutInflater: LayoutInflater
+    //处理多类型布局
+    private var mLayoutIds: MutableMap<Int, Int> = mutableMapOf()
+    //处理多类型Type
+    private var mTypes: ArrayList<Int> = ArrayList()
+
+    private var mDataWithTypes: MutableMap<Int, T> = mutableMapOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
-        Log.i("info", "onBindViewHolder=" + type)
+        Log.i("KotlinAdapter", "onBindViewHolder=" + type)
         val inflater = LayoutInflater.from(parent.context)
 
         when (type) {
             HEAD_TYPE -> {
-                if (mHeaderView != null) {
-                    return ViewHolder(mHeaderView!!)
-                }
                 if (mHeaderLayoutId != null) {
                     return ViewHolder(inflater.inflate(mHeaderLayoutId!!, parent, false))
                 }
@@ -101,14 +171,18 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
             }
 
             FOOT_TYPE -> {
-                if (mFooterView != null) {
-                    return ViewHolder(mFooterView!!)
-                }
                 if (mFooterLayoutId != null) {
                     return ViewHolder(inflater.inflate(mFooterLayoutId!!, parent, false))
                 }
             }
         }
+
+        if (mDataWithTypes[type] != null) {
+            return ViewHolder(mLayoutIds[type]?.let {
+                inflater.inflate(it, parent, false)
+            }!!)
+        }
+
         return ViewHolder(inflater.inflate(mLayout, parent, false))
     }
 
@@ -125,19 +199,19 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         Log.i("info", "onBindViewHolder=" + position)
-        if (getItemViewType(position) == BODY_TYPE) {
+        if (getItemViewType(position) == HEAD_TYPE) {
+            mBindHeader(vh.itemView)
+        } else if (getItemViewType(position) == FOOT_TYPE) {
+            mBindFooter(vh.itemView)
+        } else {
             var calculatePosition = position
             if (mHeaderView != null || mHeaderLayoutId != null) {
                 calculatePosition = position - 1
             }
             vh.itemView.setOnClickListener { view ->
-                mOnItemClickListener(calculatePosition, view)
+                mOnItemClickListener?.invoke(calculatePosition, view)
             }
-            mBind(vh, mDatas.get(calculatePosition))
-        } else if (getItemViewType(position) == HEAD_TYPE) {
-            mBindHeader(vh.itemView)
-        } else if (getItemViewType(position) == FOOT_TYPE) {
-            mBindFooter(vh.itemView)
+            mBind(getItemViewType(position), vh, mDatas.get(calculatePosition))
         }
     }
 
@@ -146,10 +220,15 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
             return HEAD_TYPE
         } else if (isFoot(position)) {
             return FOOT_TYPE
-        } else {
-            return BODY_TYPE
+        } else if (mTypes.size > 0) {
+            return GetType(position)
         }
         return super.getItemViewType(position)
+    }
+
+    private fun GetType(position: Int): Int {
+        val p = if (position > 0) position - 1 else position
+        return mTypes.get(p)
     }
 
     private fun isFoot(position: Int): Boolean {
@@ -171,7 +250,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
     companion object {
-        private lateinit var mOnItemClickListener: (position: Int, view: View) -> Unit
+        private var mOnItemClickListener: ((position: Int, view: View) -> Unit)? = null
 
         val HEAD_TYPE = 1
         val FOOT_TYPE = 2

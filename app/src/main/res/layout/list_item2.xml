@@ -6,9 +6,9 @@
     <TextView
         android:id="@+id/tv_item"
         android:layout_width="match_parent"
-        android:text="测试"
+        android:text="测试2"
         android:gravity="center"
-        android:background="#e421ca"
+        android:background="#c27426"
         android:textColor="#333333"
         android:padding="10dp"
         android:layout_height="wrap_content" />

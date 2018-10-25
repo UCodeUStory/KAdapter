@@ -16,7 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SingleLayoutDemo1"></activity>
+        <activity android:name=".activity.SingleLayoutDemo1" />
+        <activity android:name=".activity.SingleLayoutDemo2" />
+        <activity android:name=".activity.SingleLayoutDemo3" />
+        <activity android:name=".activity.MutilLayoutDemo1"></activity>
+        <activity android:name=".activity.MutilLayoutDemo2"></activity>
     </application>
 
 </manifest>

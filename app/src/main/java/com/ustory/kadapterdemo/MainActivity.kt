@@ -5,8 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import com.ustory.kadapterdemo.R.id.recyclerView
-import com.ustory.kadapterdemo.activity.BaseActivity
-import com.ustory.kadapterdemo.activity.SingleLayoutDemo1
+import com.ustory.kadapterdemo.activity.*
 import com.ustory.koinsample.Adapter.menuAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -16,9 +15,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
+   var datas:ArrayList<Menu> = ArrayList<Menu>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        datas.add(Menu("单个布局写法1"))
+        datas.add(Menu("单个布局写法2"))
+        datas.add(Menu("添加header和footer"))
+        datas.add(Menu("多种布局写法1"))
+        datas.add(Menu("多种布局写法2"))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -27,24 +34,27 @@ class MainActivity : BaseActivity() {
                 0 -> {
                     launcher(SingleLayoutDemo1::class.java)
                 }
+                1 -> {
+                    launcher(SingleLayoutDemo2::class.java)
+                }
+                2 -> {
+                    launcher(SingleLayoutDemo3::class.java)
+                }
+                3 -> {
+                    launcher(MutilLayoutDemo1::class.java)
+                }
+                4 -> {
+                    launcher(MutilLayoutDemo2::class.java)
+                }
 
             }
         }
+
+        menuAdapter.data {
+            datas
+        }
+
         menuAdapter into recyclerView
 
-
-
-//        myAdapter.data {
-//            arrayListOf(Person("Bob"),Person("John"))
-//        }
-//        myAdapter.onItemClick { position, view -> Toast.makeText(this, "position=" + position, Toast.LENGTH_SHORT).show() }
-//
-//        myAdapter.header(R.layout.header){
-//            it.tv_text.text = "My name is Header"
-//        }
-//        myAdapter.footer(R.layout.footer){
-//            it.tv_text.text = "My name is Footer"
-//        }
-//        myAdapter into recyclerView
     }
 }

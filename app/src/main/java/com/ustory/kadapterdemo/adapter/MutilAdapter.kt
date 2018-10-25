@@ -5,10 +5,8 @@ import com.ustory.kadapterdemo.Menu
 import com.ustory.kadapterdemo.R
 import com.ustory.koinsample.Adapter.KAdapterFactory
 import com.ustory.koinsample.Adapter.KotlinAdapter
+import kotlinx.android.synthetic.main.list_item.view.*
 
-/**
- * 定义一个adapter就这么简单
- */
 var mutilAdapter: KotlinAdapter<Menu> = KAdapterFactory.KAdapter {
 
     multiLayout {
@@ -18,22 +16,42 @@ var mutilAdapter: KotlinAdapter<Menu> = KAdapterFactory.KAdapter {
         layout {
             R.layout.list_item2
         }
-    }
-
-    dataWithType {
-
-        var mDataWithTypes: MutableMap<Int, Menu> = mutableMapOf()
-        mDataWithTypes.put(R.layout.list_item, Menu("菜单1"))
-        mDataWithTypes.put(R.layout.list_item2, Menu("菜单2"))
-        mDataWithTypes
-    }
-
-    bindData { type, vh, data ->
-        when (type) {
-            R.layout.list_item -> vh.bindView<TextView>(R.id.tv_title).text = data.name
-            R.layout.list_item2 -> vh.bindView<TextView>(R.id.tv_title).text = data.name
+        layout {
+            R.layout.list_item3
         }
     }
 
 
+    bindData { type, vh, data ->
+        when (type) {
+            R.layout.list_item -> vh.itemView.tv_item.text = data.name
+            R.layout.list_item2 -> vh.itemView.tv_item.text = data.name
+            R.layout.list_item3 -> vh.itemView.tv_item.text = data.name
+        }
+    }
+}
+
+
+
+var mutilAdapter2: KotlinAdapter<Menu> = KAdapterFactory.KAdapter {
+
+    multiLayout {
+        layout {
+            R.layout.list_item
+        }
+        layout {
+            R.layout.list_item2
+        }
+        layout {
+            R.layout.list_item3
+        }
+    }
+
+    bindData { type, vh, data ->
+        when (type) {
+            R.layout.list_item -> vh.itemView.tv_item.text = data.name
+            R.layout.list_item2 -> vh.itemView.tv_item.text = data.name
+            R.layout.list_item3 -> vh.itemView.tv_item.text = data.name
+        }
+    }
 }

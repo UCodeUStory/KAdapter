@@ -17,6 +17,7 @@ object KAdapterFactory {
         val adapter = object : KotlinAdapter<T>(){}
         var resultAdapter = adapter as KotlinAdapter<T>
         resultAdapter.layout { layoutId }
+        resultAdapter.body()
         return resultAdapter
     }
 

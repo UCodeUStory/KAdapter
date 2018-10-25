@@ -17,10 +17,6 @@ var menuAdapter: KotlinAdapter<Menu> = KAdapter {
         R.layout.menu_list
     }
 
-    data {
-        arrayListOf(Menu("单个布局写法1"), Menu("多种布局写法1"), Menu("多种布局写法2"))
-    }
-
     bindData { type, vh, data ->
         vh.itemView.tv_title.text = data.name
     }

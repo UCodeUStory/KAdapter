@@ -23,7 +23,6 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         mLayout = layoutId()
     }
 
-
     /**
      * 添加单个布局
      */
@@ -59,20 +58,6 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         mLayoutIds = creator.getValue()
     }
 
-
-//    /**
-//     * 添加带类型的数据，批量
-//     */
-//    fun dataWithType(datas: ArrayList<Pair<Int, T?>>) {
-//        mDataWithTypes = datas
-//        mTypes.clear()
-//        mDatas.clear()
-//        mDataWithTypes.forEach {
-//            mTypes.add(it.first)
-//            mDatas.add(it.second)
-//        }
-//    }
-
     private var mItemDatas: MutableList<Item<T>> = arrayListOf()
     /**
      * 适配数据
@@ -100,21 +85,6 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         }
     }
 
-//    /**
-//     * 添加带类型的数据，批量
-//     */
-//    fun dataWithType(initData: MultiDataCreater<T>.() -> Unit) {
-//        val creator = MultiDataCreater<T>()
-//        creator.initData()
-//        mDataWithTypes = creator.getValue()
-//        mTypes.clear()
-//        mDatas.clear()
-//        mDataWithTypes.forEach {
-//            mTypes.add(it.first)
-//            mDatas.add(it.second)
-//        }
-//    }
-
     /**
      * 仅更新数据，如果和类型数据不设置，默认用最后一个设置的layout
      */
@@ -127,21 +97,10 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     }
 
-//    /**
-//     * 仅更新类型，如果和数据数量不一致会有问题
-//     */
-//    fun type(types: () -> ArrayList<Int>) {
-//        mDatas ?: error("请先初始化数据")
-//        mTypes = types()
-//        for (i in mTypes.indices) {
-//            mDataWithTypes.put(mTypes[i], mDatas[i]!!)
-//        }
-//    }
-
     /**
      * 当我们已经定义好大部分要绑定的数据是，只是个别的需要单独设置，我们可以通过这个方法拦截
      */
-    fun interceptBindView(type: Int, bind: (positino: Int, type: Int, vh: ViewHolder) -> Unit) {
+    fun bindData(type: Int, bind: (type: Int, vh: ViewHolder,data:T?,backupData:Any?) -> Unit) {
         interceptViews.put(type, bind)
     }
 
@@ -210,7 +169,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     private lateinit var mBind: ((type: Int, vh: ViewHolder, data: T) -> Unit?)
 
-    private var mBindInterceptView: ((calculatePosition: Int, type: Int, vh: ViewHolder) -> Unit?)? = null
+    private var mBindInterceptView: ((type: Int, vh: ViewHolder,data:T?,backupData:Any?) -> Unit?)? = null
 
     private lateinit var mBindHeader: (view: View) -> Unit
 
@@ -282,9 +241,9 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
                 mOnItemClickListener?.invoke(calculatePosition, view)
             }
             if (isIntercept(getItemViewType(position))) {
-                mBindInterceptView = interceptViews.get(getItemViewType(position)) as ((calculatePosition: Int, type: Int, vh: ViewHolder) -> Unit?)?
+                mBindInterceptView = interceptViews.get(getItemViewType(position)) as ((type: Int, vh: ViewHolder,data:T?,backupData:Any?) -> Unit?)?
                 if (mBindInterceptView != null) {
-                    mBindInterceptView?.invoke(calculatePosition, getItemViewType(position), vh)
+                     mBindInterceptView?.invoke( getItemViewType(position), vh,mDatas.get(calculatePosition).data, mDatas.get(calculatePosition).backupData)
                 }
             } else {
                 mDatas.get(calculatePosition).data?.let { mBind(getItemViewType(position), vh, it) }

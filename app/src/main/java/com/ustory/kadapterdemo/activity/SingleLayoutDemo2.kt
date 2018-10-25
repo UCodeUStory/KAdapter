@@ -14,7 +14,7 @@ class SingleLayoutDemo2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_layout_demo2)
 
-        var datas = arrayListOf(Menu("Android"), Menu("IOS"), Menu("微信小程序"))
+        var datas = arrayListOf(Menu("苹果"), Menu("香蕉"), Menu("橘子"))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 

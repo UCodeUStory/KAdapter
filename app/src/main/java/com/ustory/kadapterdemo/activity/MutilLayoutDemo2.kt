@@ -22,30 +22,20 @@ class MutilLayoutDemo2 : AppCompatActivity() {
         var datas = arrayListOf(Menu("Android"), Menu("IOS"), Menu("微信小程序"))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        //需要单独处理的类型
-        mutilAdapter2.interceptBindView(R.layout.list_item2){
-            position ,type, vh ->  vh.itemView.tv_item.text = "Pro-IOS"
-        }
-        mutilAdapter2.interceptBindView(R.layout.list_item){
-            position,type, vh ->  vh.itemView.tv_item.text = "Pro-Android"
+//        //需要单独处理的类型
+//        mutilAdapter2.interceptBindView(R.layout.list_item2){
+//            position ,type, vh ->  vh.itemView.tv_item.text = "Pro-IOS"
+//        }
+//        mutilAdapter2.interceptBindView(R.layout.list_item){
+//            position,type, vh ->  vh.itemView.tv_item.text = "Pro-Android"
+//
+//        }
 
-        }
-
-        mutilAdapter2.dataWithType {
-            for (i in datas.indices) {
-                if (i == 0) {
-                    for(i in 0..50){
-                        add(R.layout.list_item to null)
-                    }
-                    add(R.layout.list_item3 to datas[i])
-                } else if(i == 1){
-                    add(R.layout.list_item2 to null)
-                    add(R.layout.list_item3 to datas[i])
-                } else {
-                    add(R.layout.list_item3 to datas[i])
-
-                }
-            }
+        mutilAdapter2.data(datas) {
+            update(0,R.layout.red_layout)
+            update(1,R.layout.yellow_layout)
+            update(2,R.layout.blue_layout)
+//            update(3,R.layout.green_layout)
         }
 
         mutilAdapter2 into recyclerView

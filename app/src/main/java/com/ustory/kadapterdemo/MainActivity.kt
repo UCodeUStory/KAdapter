@@ -29,6 +29,7 @@ class MainActivity : BaseActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+
         menuAdapter.onItemClick { position, view ->
             when(position){
                 0 -> {

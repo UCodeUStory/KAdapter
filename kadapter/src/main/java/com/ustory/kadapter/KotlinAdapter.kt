@@ -7,6 +7,7 @@ import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ustory.kadapter.Item
 import com.ustory.kadapter.MultiDataCreater
 import com.ustory.kadapter.MultiLayoutCreater
 import java.lang.ref.WeakReference
@@ -59,39 +60,71 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
 
+//    /**
+//     * 添加带类型的数据，批量
+//     */
+//    fun dataWithType(datas: ArrayList<Pair<Int, T?>>) {
+//        mDataWithTypes = datas
+//        mTypes.clear()
+//        mDatas.clear()
+//        mDataWithTypes.forEach {
+//            mTypes.add(it.first)
+//            mDatas.add(it.second)
+//        }
+//    }
+
+    private var mItemDatas: MutableList<Item<T>> = arrayListOf()
     /**
-     * 添加带类型的数据，批量
+     * 适配数据
      */
-    fun dataWithType(datas:  ArrayList<Pair<Int, T?>>) {
-        mDataWithTypes = datas
-        mTypes.clear()
+    fun data(datas: List<T>, initData: MultiDataCreater<T>.() -> Unit) {
         mDatas.clear()
-        mDataWithTypes.forEach {
-            mTypes.add(it.first)
-            mDatas.add(it.second)
+        datas.forEach {
+            mDatas.add(Item(data = it))
+        }
+
+        var creator = MultiDataCreater<T>()
+        creator.initData()
+        var updateTypes = creator.updateTypes
+        updateTypes.forEach {
+            if (it.key < mDatas.size) {
+                mDatas[it.key].type = it.value.type
+            }
+        }
+        var insertTypes = creator.insertTypes
+        insertTypes.forEach {
+            mDatas.add(it.insertPosition, Item(backupData = it.backupData, type = it.type))
+        }
+        mDatas.forEach {
+            mTypes.add(it.type!!)
         }
     }
 
-    /**
-     * 添加带类型的数据，批量
-     */
-    fun dataWithType(initData: MultiDataCreater<T>.() -> Unit) {
-        val creator = MultiDataCreater<T>()
-        creator.initData()
-        mDataWithTypes = creator.getValue()
-        mTypes.clear()
-        mDatas.clear()
-        mDataWithTypes.forEach {
-            mTypes.add(it.first)
-            mDatas.add(it.second)
-        }
-    }
+//    /**
+//     * 添加带类型的数据，批量
+//     */
+//    fun dataWithType(initData: MultiDataCreater<T>.() -> Unit) {
+//        val creator = MultiDataCreater<T>()
+//        creator.initData()
+//        mDataWithTypes = creator.getValue()
+//        mTypes.clear()
+//        mDatas.clear()
+//        mDataWithTypes.forEach {
+//            mTypes.add(it.first)
+//            mDatas.add(it.second)
+//        }
+//    }
 
     /**
      * 仅更新数据，如果和类型数据不设置，默认用最后一个设置的layout
      */
     fun data(datas: () -> ArrayList<*>) {
-        mDatas = datas() as ArrayList<T?>
+        mDatas.clear()
+        var tempdatas = datas() as ArrayList<T?>
+        tempdatas.forEach {
+            mDatas.add(Item(data = it))
+        }
+
     }
 
 //    /**
@@ -108,7 +141,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     /**
      * 当我们已经定义好大部分要绑定的数据是，只是个别的需要单独设置，我们可以通过这个方法拦截
      */
-    fun interceptBindView(type: Int, bind: (positino:Int,type: Int, vh: ViewHolder) -> Unit) {
+    fun interceptBindView(type: Int, bind: (positino: Int, type: Int, vh: ViewHolder) -> Unit) {
         interceptViews.put(type, bind)
     }
 
@@ -165,7 +198,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     private var mLayout: Int = 0
 
-    private var mDatas: ArrayList<T?> = arrayListOf()
+    private var mDatas: MutableList<Item<T>> = arrayListOf()
 
     private var mHeaderView: WeakReference<View>? = null
 
@@ -177,7 +210,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     private lateinit var mBind: ((type: Int, vh: ViewHolder, data: T) -> Unit?)
 
-    private var mBindInterceptView: ((calculatePosition:Int,type: Int, vh: ViewHolder) -> Unit?)? = null
+    private var mBindInterceptView: ((calculatePosition: Int, type: Int, vh: ViewHolder) -> Unit?)? = null
 
     private lateinit var mBindHeader: (view: View) -> Unit
 
@@ -189,9 +222,11 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     //处理多类型Type
     private var mTypes: ArrayList<Int> = ArrayList()
 
-    private var mDataWithTypes: ArrayList<Pair<Int,T?>> = arrayListOf()
+    private var mDataWithTypes: ArrayList<Pair<Int, T?>> = arrayListOf()
     /** 保存拦截的类型和处理函数**/
     private var interceptViews: MutableMap<Int, Any> = mutableMapOf()
+
+    private var mOnItemClickListener: ((position: Int, view: View) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
         Log.i("KotlinAdapter", "onBindViewHolder=" + type)
@@ -247,14 +282,12 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
                 mOnItemClickListener?.invoke(calculatePosition, view)
             }
             if (isIntercept(getItemViewType(position))) {
-                mBindInterceptView = interceptViews.get(getItemViewType(position)) as ((calculatePosition:Int,type: Int, vh: ViewHolder) -> Unit?)?
+                mBindInterceptView = interceptViews.get(getItemViewType(position)) as ((calculatePosition: Int, type: Int, vh: ViewHolder) -> Unit?)?
                 if (mBindInterceptView != null) {
-                    mBindInterceptView?.invoke(calculatePosition,getItemViewType(position), vh)
+                    mBindInterceptView?.invoke(calculatePosition, getItemViewType(position), vh)
                 }
             } else {
-                if (mDatas.get(calculatePosition) != null) {
-                    mBind(getItemViewType(position), vh, mDatas.get(calculatePosition)!!)
-                }
+                mDatas.get(calculatePosition).data?.let { mBind(getItemViewType(position), vh, it) }
             }
         }
     }
@@ -297,7 +330,6 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
     companion object {
-        private var mOnItemClickListener: ((position: Int, view: View) -> Unit)? = null
 
         val HEAD_TYPE = 1
         val FOOT_TYPE = 2

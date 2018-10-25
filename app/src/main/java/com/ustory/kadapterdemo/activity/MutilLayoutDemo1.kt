@@ -36,9 +36,6 @@ class MutilLayoutDemo1 : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
 
-        mutilAdapter.dataWithType {
-            dataTargets
-        }
 
         mutilAdapter into recyclerView
     }

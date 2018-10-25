@@ -37,21 +37,25 @@ var mutilAdapter2: KotlinAdapter<Menu> = KAdapterFactory.KAdapter {
 
     multiLayout {
         layout {
-            R.layout.list_item
+            R.layout.red_layout
         }
         layout {
-            R.layout.list_item2
+            R.layout.yellow_layout
         }
         layout {
-            R.layout.list_item3
+            R.layout.blue_layout
+        }
+        layout {
+            R.layout.green_layout
         }
     }
 
     bindData { type, vh, data ->
         when (type) {
-            R.layout.list_item -> vh.itemView.tv_item.text = data.name
-            R.layout.list_item2 -> vh.itemView.tv_item.text = data.name
-            R.layout.list_item3 -> vh.itemView.tv_item.text = data.name
+            R.layout.red_layout -> vh.itemView.tv_item.text = data.name
+            R.layout.yellow_layout -> vh.itemView.tv_item.text = data.name
+            R.layout.blue_layout -> vh.itemView.tv_item.text = data.name
+            R.layout.green_layout -> vh.itemView.tv_item.text = data.name
         }
     }
 }

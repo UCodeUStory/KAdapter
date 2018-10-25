@@ -21,8 +21,50 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
+
 
 }
+
+task makeJar(type: Jar) {
+    archiveName 'KAdapter_1.0.jar'
+    //添加项目中java生成的class文件目录
+    from('build/intermediates/classes/release/')
+    //添加项目中kotlin生成的class文件目录
+    from('build/tmp/kotlin-classes/release')
+//    from(project.zipTree("libs/wiwide_sdk_7_4_1.jar"))
+
+//    添加Kotlin库(方法1)
+    from {
+        String[] include = [
+                "kotlin-runtime-${kotlin_version}.jar",
+                "kotlin-stdlib-${kotlin_version}.jar"
+        ]
+        configurations.compile
+                .findAll { include.contains(it.name) }
+                .collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    destinationDir = file('build/libs')
+
+//    exclude('wiwide_sdk/BuildConfig.class')
+//    exclude('包名/BuildConfig\$*.class')
+//    exclude('**/R.class')
+//    exclude('**/R\$*.class')
+    exclude('android/**')
+
+    //以下为此处第三方库需包含文件（gson、okhttp、okio）
+//    include('com/**')
+//    include('org/**')
+//    include('kotlin/**')
+    include('**/**')
+//    include('okhttp3/**')
+//    include('okio/**')
+}
+makeJar.dependsOn(build)
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

@@ -2,7 +2,7 @@
 封装Kotlin版本RecyclerView Adapter,使用DSL创建Adapter，创建Adapter就这么简单
 
 
-### [KAdapter最新Jar下载](https://github.com/UCodeUStory/KAdapter/blob/master/jar/KAdapter_1.0.jar)
+### [KAdapter最新Jar下载](https://github.com/UCodeUStory/KAdapter/blob/master/jar)
 
 Usage
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+
+    <TextView
+        android:layout_width="100dp"
+        android:background="@drawable/qingcun"
+        android:gravity="center"
+        android:text="清纯"
+        android:layout_height="100dp" />
+    <TextView
+        android:layout_width="100dp"
+        android:text="性感"
+        android:gravity="center"
+        android:background="@drawable/xinggan"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_height="100dp" />
+    <TextView
+        android:layout_width="100dp"
+        android:gravity="center"
+        android:text="校园"
+        android:background="@drawable/xiaoyuan"
+        android:layout_height="100dp" />
+</LinearLayout>

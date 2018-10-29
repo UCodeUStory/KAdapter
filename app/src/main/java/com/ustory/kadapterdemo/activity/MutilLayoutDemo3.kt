@@ -1,5 +1,6 @@
 package com.ustory.kadapterdemo.activity
 
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
@@ -9,16 +10,21 @@ import com.ustory.kadapterdemo.Menu
 import com.ustory.kadapterdemo.R
 import com.ustory.kadapterdemo.R.id.recyclerView
 import com.ustory.kadapterdemo.adapter.MISCAdapter
+import com.ustory.kadapterdemo.adapter.ViewPagerAdapter
 import com.ustory.kadapterdemo.adapter.horizationAdapter
 import com.ustory.kadapterdemo.adapter.mutilAdapter2
 import com.ustory.kadapterdemo.bean.HorizationBean
 import com.ustory.kadapterdemo.bean.ImageBean
+import com.ustory.kadapterdemo.fragment.OneFragment
 import com.ustory.koinsample.Adapter.KotlinAdapter
 import com.ustory.koinsample.Adapter.menuAdapter
 import kotlinx.android.synthetic.main.activity_mutil_layout_demo3.*
 import kotlinx.android.synthetic.main.horization_list.view.*
 
-class MutilLayoutDemo3 : AppCompatActivity() {
+class MutilLayoutDemo3 : AppCompatActivity(), OneFragment.OnFragmentInteractionListener {
+    override fun onFragmentInteraction(uri: Uri) {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +37,15 @@ class MutilLayoutDemo3 : AppCompatActivity() {
 
         MISCAdapter.header(R.layout.misc_header) {
             var viewPager = it.findViewById<ViewPager>(R.id.viewPager)
+            viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
 
         }
 
         MISCAdapter.data(datas) {
             update(0..datas.size - 1, R.layout.content_item)
-            insert(1, R.layout.horization_list, HorizationBean(horizationDatas))
+
+            insert(0, R.layout.horization_list, HorizationBean(horizationDatas))
+            insert(0, R.layout.first_menu, HorizationBean(horizationDatas))
 
         }
 

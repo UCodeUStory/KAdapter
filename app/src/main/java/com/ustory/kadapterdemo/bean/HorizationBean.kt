@@ -1,4 +1,5 @@
 package com.ustory.kadapterdemo.bean
 
-class HorizationBean {
+class HorizationBean(val datas:ArrayList<String>) {
+
 }

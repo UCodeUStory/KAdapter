@@ -26,6 +26,7 @@ class MainActivity : BaseActivity() {
         datas.add(Menu("添加header和footer"))
         datas.add(Menu("多种布局写法1"))
         datas.add(Menu("多种布局写法2"))
+        datas.add(Menu("多种布局写法3"))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -46,6 +47,9 @@ class MainActivity : BaseActivity() {
                 }
                 4 -> {
                     launcher(MutilLayoutDemo2::class.java)
+                }
+                5 -> {
+                    launcher(MutilLayoutDemo3::class.java)
                 }
 
             }

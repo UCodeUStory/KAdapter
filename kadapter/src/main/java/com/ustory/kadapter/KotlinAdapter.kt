@@ -81,6 +81,9 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
             mDatas.add(it.insertPosition, Item(backupData = it.backupData, type = it.type))
         }
         mDatas.forEach {
+            if (it.type == null) {
+                it.type = mLayout//最后一个
+            }
             mTypes.add(it.type!!)
         }
     }
@@ -100,8 +103,8 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     /**
      * 当我们已经定义好大部分要绑定的数据是，只是个别的需要单独设置，我们可以通过这个方法拦截
      */
-    fun bindData(type: Int, bind: (type: Int, vh: ViewHolder,data:T?,backupData:Any?) -> Unit) {
-        interceptViews.put(type, bind)
+    fun bindData(type: Int, interceptBind: (type: Int, vh: ViewHolder, data: T?, backupData: Any?) -> Unit) {
+        interceptViews.put(type, interceptBind)
     }
 
     /**
@@ -169,7 +172,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     private lateinit var mBind: ((type: Int, vh: ViewHolder, data: T) -> Unit?)
 
-    private var mBindInterceptView: ((type: Int, vh: ViewHolder,data:T?,backupData:Any?) -> Unit?)? = null
+    private var mBindInterceptView: ((type: Int, vh: ViewHolder, data: T?, backupData: Any?) -> Unit?)? = null
 
     private lateinit var mBindHeader: (view: View) -> Unit
 
@@ -241,9 +244,9 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
                 mOnItemClickListener?.invoke(calculatePosition, view)
             }
             if (isIntercept(getItemViewType(position))) {
-                mBindInterceptView = interceptViews.get(getItemViewType(position)) as ((type: Int, vh: ViewHolder,data:T?,backupData:Any?) -> Unit?)?
+                mBindInterceptView = interceptViews.get(getItemViewType(position)) as ((type: Int, vh: ViewHolder, data: T?, backupData: Any?) -> Unit?)?
                 if (mBindInterceptView != null) {
-                     mBindInterceptView?.invoke( getItemViewType(position), vh,mDatas.get(calculatePosition).data, mDatas.get(calculatePosition).backupData)
+                    mBindInterceptView?.invoke(getItemViewType(position), vh, mDatas.get(calculatePosition).data, mDatas.get(calculatePosition).backupData)
                 }
             } else {
                 mDatas.get(calculatePosition).data?.let { mBind(getItemViewType(position), vh, it) }

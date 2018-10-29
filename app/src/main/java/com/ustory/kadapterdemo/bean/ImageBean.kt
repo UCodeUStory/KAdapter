@@ -1,4 +1,4 @@
 package com.ustory.kadapterdemo.bean
 
-class ImageBean {
+class ImageBean(val title: String = "", val imageUrl: String = "") {
 }

@@ -1,10 +1,15 @@
 # KAdapter
-封装Kotlin版本RecyclerView Adapter,使用DSL创建Adapter，创建Adapter就这么简单
 
-
-### [KAdapter最新Jar下载](https://github.com/UCodeUStory/KAdapter/blob/master/jar)
+KAdapter 是Kotlin版本RecyclerView Adapter的封装,使用DSL创建Adapter，使用更简洁的方式创建
 
 Usage
+
+#### 当前最新版本 1.0.2
+
+#### 引库
+
+        implementation 'cn.ustory.qy:kadapter:1.0.2'
+
 
 1. 创建
 

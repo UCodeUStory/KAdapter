@@ -11,6 +11,7 @@ Usage
         implementation 'cn.ustory.qy:kadapter:1.0.2'
 
 
+
 1. 创建
 
       - 1. 最简单创建
@@ -82,7 +83,12 @@ Usage
           }
       }
 
-      - 4. 多类型布局
+      - 4. 实现多类型布局(效果图如下)
+
+      <div align="center">
+      <img width=540" height="800" src="https://github.com/UCodeUStory/KAdapter/blob/master/demo_img.png"/>
+      </div>
+
 
 
        var mutilAdapter: KotlinAdapter<Menu> = KAdapterFactory.KAdapter {

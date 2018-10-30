@@ -39,8 +39,6 @@ class MutilLayoutDemo3 : AppCompatActivity() {
         MISCAdapter.header(R.layout.misc_header) {
             var viewPager = it.findViewById<ViewPager>(R.id.viewPager)
             viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
-
-
         }
 
         MISCAdapter.data(datas) {

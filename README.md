@@ -5,7 +5,7 @@ KAdapter 是Kotlin版本RecyclerView Adapter的封装,使用DSL创建Adapter，�
 Usage
 
 #### 当前最新版本 1.0.2
-
+![](https://img.shields.io/badge/QQ-1483888222-green.svg)
 #### 引库
 
         implementation 'cn.ustory.qy:kadapter:1.0.2'
@@ -175,4 +175,6 @@ Usage
            }
 
            mutilAdapter into recyclerView
+
+ ### 多布局 实现主要是通过update来单个和批量设置数据类型，使用insert可以在指定位置插入一条新的数据，可以指定类型
         

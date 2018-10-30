@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:background="#e76262"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="100dp">
 
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/d4"
+        android:layout_height="match_parent" />
 
-
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="290dp"
+        android:textColor="#dac417"
+        android:layout_height="match_parent"
+        android:text="女人的气质与内涵是大气,安静,从容,成熟,是一种朴素恬淡和向往和追求"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_vertical"
+        app:layout_constraintLeft_toRightOf="@id/iv_image"
+        android:padding="5dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <View
         android:background="#494848"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="1px"/>
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

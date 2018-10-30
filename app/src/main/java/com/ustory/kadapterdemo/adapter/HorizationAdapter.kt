@@ -5,7 +5,7 @@ import com.ustory.koinsample.Adapter.KAdapterFactory.KAdapter
 import com.ustory.koinsample.Adapter.KotlinAdapter
 import kotlinx.android.synthetic.main.horization_item.view.*
 
-var horizationAdapter = KAdapter<String>{
+var horizationAdapter = KAdapter<Int>{
 
 
     layout {
@@ -14,6 +14,6 @@ var horizationAdapter = KAdapter<String>{
     
     bindData { type, vh, data ->
 
-        vh.itemView.tv_text.text = data
+        vh.itemView.iv_image.setImageResource(data)
     }
 }

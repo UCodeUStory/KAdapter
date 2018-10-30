@@ -21,6 +21,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
      */
     fun layout(layoutId: () -> Int) {
         mLayout = layoutId()
+        mLayoutIds.put(mLayout, mLayout)
     }
 
     /**

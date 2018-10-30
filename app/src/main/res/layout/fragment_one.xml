@@ -7,8 +7,8 @@
 
     <!-- TODO: Update blank fragment layout -->
     <ImageView
+        android:id="@+id/iv_header"
         android:layout_width="match_parent"
-        android:src="@drawable/d1"
         android:scaleType="centerCrop"
         android:layout_height="200dp"
         />

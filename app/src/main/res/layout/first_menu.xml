@@ -3,10 +3,12 @@
     android:orientation="horizontal"
     android:gravity="center"
     android:layout_width="match_parent"
+    android:background="#fff8f8"
     android:layout_height="150dp">
 
     <TextView
         android:layout_width="100dp"
+        android:textColor="#FFF"
         android:background="@drawable/qingcun"
         android:gravity="center"
         android:text="清纯"
@@ -15,6 +17,7 @@
         android:layout_width="100dp"
         android:text="性感"
         android:gravity="center"
+        android:textColor="#FFF"
         android:background="@drawable/xinggan"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -23,6 +26,7 @@
         android:layout_width="100dp"
         android:gravity="center"
         android:text="校园"
+        android:textColor="#FFF"
         android:background="@drawable/xiaoyuan"
         android:layout_height="100dp" />
 </LinearLayout>

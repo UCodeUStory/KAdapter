@@ -86,7 +86,7 @@ Usage
       - 4. 实现多类型布局(效果图如下)
 
       <div align="center">
-      <img width=540" height="800" src="https://github.com/UCodeUStory/KAdapter/blob/master/demo_img.png"/>
+      <img width=350" height="630" src="https://github.com/UCodeUStory/KAdapter/blob/master/demo_image.jpeg"/>
       </div>
 
 

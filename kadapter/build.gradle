@@ -55,8 +55,10 @@ task makeJar(type: Jar) {
 
 //    exclude('wiwide_sdk/BuildConfig.class')
 //    exclude('包名/BuildConfig\$*.class')
-//    exclude('**/R.class')
-//    exclude('**/R\$*.class')
+    exclude('**/R.class')
+    exclude('**/R\$*.class')
+    exclude('androidx/*')
+    exclude('androidx')
     exclude('android/**')
 
     //以下为此处第三方库需包含文件（gson、okhttp、okio）

@@ -23,5 +23,10 @@ class SingleLayoutDemo1 : AppCompatActivity() {
         }
 
         simpleAdapter into recyclerView
+
+        simpleAdapter.addDatas(arrayListOf(Menu("新增数据1"), Menu("新增数据2")))
+
+        simpleAdapter.notifyDataSetChanged()
+
     }
 }

@@ -37,6 +37,10 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
      */
     fun multiLayout(layoutIds: MutableMap<Int, Int>) {
         mLayoutIds = layoutIds
+        if (mLayoutIds.size > 0) {
+            var firstKey = mLayoutIds.keys.first()
+            mLayout = mLayoutIds[firstKey]!!
+        }
     }
 
     /**
@@ -46,6 +50,12 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         layoutIds.forEach {
             mLayoutIds.put(it, it)
         }
+
+        if (mLayoutIds.size > 0) {
+            var firstKey = mLayoutIds.keys.first()
+            mLayout = mLayoutIds[firstKey]!!
+        }
+
     }
 
     /**
@@ -68,7 +78,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         datas.forEach {
             mDatas.add(Item(data = it))
         }
-
+        mOriginData = datas
         var creator = MultiDataCreater<T>()
         creator.initData()
         var updateTypes = creator.updateTypes
@@ -90,11 +100,12 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
     /**
-     * 仅更新数据，如果和类型数据不设置，默认用最后一个设置的layout
+     * 仅更新数据，单布局使用此方法，如果和类型数据不设置，默认用最后一个设置的layout
      */
     fun data(datas: () -> ArrayList<*>) {
         mDatas.clear()
         var tempdatas = datas() as ArrayList<T?>
+        mOriginData = tempdatas
         tempdatas.forEach {
             mDatas.add(Item(data = it))
         }
@@ -102,7 +113,23 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
     /**
-     * 当我们已经定义好大部分要绑定的数据是，只是个别的需要单独设置，我们可以通过这个方法拦截
+     * 新增单个数据在尾部
+     */
+    fun addData(data: T) {
+        mDatas.add(Item(data = data, type = mLayout))
+    }
+
+    /**
+     * 新增多个数据在尾部
+     */
+    fun addDatas(datas:ArrayList<T>){
+        datas.forEach {
+            mDatas.add(Item(data= it,type = mLayout))
+        }
+    }
+
+    /**
+     * 当我们已经定义好大部分要绑定的数据是，只是个别的需要单独设置，我们可以通过这个方法拦截，backupData作为备份数据，也就是其他少量布局数据
      */
     fun bindData(type: Int, interceptBind: (type: Int, vh: ViewHolder, data: T?, backupData: Any?) -> Unit) {
         interceptViews.put(type, interceptBind)
@@ -160,6 +187,8 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
     private var mLayout: Int = 0
+
+    private var mOriginData: List<T?> = arrayListOf()
 
     private var mDatas: MutableList<Item<T>> = arrayListOf()
 
@@ -260,7 +289,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
             return HEAD_TYPE
         } else if (isFoot(position)) {
             return FOOT_TYPE
-        } else if (mTypes.size > 0) {
+        } else if (mTypes.size > 0) {//单个布局这个集合为0
             return GetType(position)
         }
         return super.getItemViewType(position)

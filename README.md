@@ -4,11 +4,11 @@ KAdapter 是Kotlin版本RecyclerView Adapter的封装,使用DSL创建Adapter，�
 
 Usage
 
-#### 当前最新版本 1.0.2
+#### 当前最新版本 1.0.3
 ![](https://img.shields.io/badge/QQ-1483888222-green.svg)
 #### 引库
 
-        implementation 'cn.ustory.qy:kadapter:1.0.2'
+        implementation 'cn.ustory.qy:kadapter:1.0.3'
 
 
 

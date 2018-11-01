@@ -171,5 +171,4 @@ Usage
 
                    MISCAdapter into recyclerView
 
- ### 多布局 实现主要是通过update来单个和批量设置数据类型，使用insert可以在指定位置插入一条新的数据，可以指定类型
-        
+

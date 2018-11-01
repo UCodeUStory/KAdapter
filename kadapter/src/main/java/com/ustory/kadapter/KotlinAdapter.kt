@@ -140,8 +140,10 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
      * 指定位置添加数据
      */
     fun addOtherData(index: Int, type: Int, backupData:Any) {
-        mDatas.add(index,Item( type = type,backupData = backupData))
-        mTypes.add(index,type)
+        if(isMultiLayoutMode()) {
+            mDatas.add(index, Item(type = type, backupData = backupData))
+            mTypes.add(index, type)
+        }
     }
 
     /**

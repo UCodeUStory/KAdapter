@@ -70,27 +70,22 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     }
 
     private var mItemDatas: MutableList<Item<T>> = arrayListOf()
+
     /**
      * 适配数据
      */
-    fun data(datas: List<T>, initData: MultiDataCreater<T>.() -> Unit) {
+    fun data(datas: List<T>, initData:MultiDataCreater<T>.(T) -> Unit) {
         mDatas.clear()
-        datas.forEach {
-            mDatas.add(Item(data = it))
-        }
         mOriginData = datas
         var creator = MultiDataCreater<T>()
-        creator.initData()
-        var updateTypes = creator.updateTypes
-        updateTypes.forEach {
-            if (it.key < mDatas.size) {
-                mDatas[it.key].type = it.value.type
-            }
+        datas.forEach {
+            creator.initData(it)
         }
-        var insertTypes = creator.insertTypes
-        insertTypes.forEach {
-            mDatas.add(it.insertPosition, Item(backupData = it.backupData, type = it.type))
+
+        creator.dataAndTypes.forEach { (type, data) ->
+            mDatas.add(Item(type = type,data = data))
         }
+
         mDatas.forEach {
             if (it.type == null) {
                 it.type = mLayout//最后一个
@@ -107,26 +102,62 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         var tempdatas = datas() as ArrayList<T?>
         mOriginData = tempdatas
         tempdatas.forEach {
-            mDatas.add(Item(data = it))
+            mDatas.add(Item(data = it, type = mLayout))
+            mTypes.add(mLayout)
         }
+
 
     }
 
     /**
      * 新增单个数据在尾部
+     * notice 多布局调用不起作用
      */
     fun addData(data: T) {
-        mDatas.add(Item(data = data, type = mLayout))
+        if (!isMultiLayoutMode()) {
+            mDatas.add(Item(data = data, type = mLayout))
+            mTypes.add(mLayout)
+        }
     }
 
     /**
-     * 新增多个数据在尾部
+     * 新增mutilType数据在尾部
      */
-    fun addDatas(datas:ArrayList<T>){
-        datas.forEach {
-            mDatas.add(Item(data= it,type = mLayout))
+    fun addData(type: Int, data: T) {
+        mDatas.add(Item(data = data, type = type))
+        mTypes.add(type)
+    }
+
+    /**
+     * 指定位置添加数据
+     */
+    fun addData(index: Int, type: Int, data: T) {
+        mDatas.add(index,Item(data = data, type = type))
+        mTypes.add(index,type)
+    }
+
+    /**
+     * 指定位置添加数据
+     */
+    fun addOtherData(index: Int, type: Int, backupData:Any) {
+        mDatas.add(index,Item( type = type,backupData = backupData))
+        mTypes.add(index,type)
+    }
+
+    /**
+     * 新增mutilType数据在尾部
+     * notice 多个布局模式调用时，会显示第一个布局的样式
+     *
+     */
+    fun addDatas(datas: ArrayList<T>) {
+        if (!isMultiLayoutMode()) {
+            datas.forEach {
+                mDatas.add(Item(data = it, type = mLayout))
+                mTypes.add(mLayout)
+            }
         }
     }
+
 
     /**
      * 当我们已经定义好大部分要绑定的数据是，只是个别的需要单独设置，我们可以通过这个方法拦截，backupData作为备份数据，也就是其他少量布局数据
@@ -186,6 +217,13 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         recyclerView().adapter = this
     }
 
+    private fun isMultiLayoutMode(): Boolean {
+        if (mLayoutIds.size < 0) {
+            error("请至少设置一个布局")
+        }
+        return mLayoutIds.size > 1
+    }
+
     private var mLayout: Int = 0
 
     private var mOriginData: List<T?> = arrayListOf()
@@ -239,7 +277,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
             }
         }
 
-        if (mTypes.contains(type)) {
+        if (mTypes.contains(type) && mLayoutIds[type] != null) {
             return ViewHolder(mLayoutIds[type]?.let {
                 inflater.inflate(it, parent, false)
             }!!)

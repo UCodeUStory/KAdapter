@@ -4,11 +4,11 @@ KAdapter 是Kotlin版本RecyclerView Adapter的封装,使用DSL创建Adapter，�
 
 Usage
 
-#### 当前最新版本 1.0.3
+#### 当前最新版本 1.0.4
 ![](https://img.shields.io/badge/QQ-1483888222-green.svg)
 #### 引库
 
-        implementation 'cn.ustory.qy:kadapter:1.0.3'
+        implementation 'cn.ustory.qy:kadapter:1.0.4'
 
 
 
@@ -146,35 +146,30 @@ Usage
            
            myAdapter into recyclerView
 
-        3. 多类型使用
+        3. 多类型使用场景分2种
+           - 1. 数相同，布局不同，我们把这部分数据叫做原始数据
 
-           //原始数据
-           var datas = arrayListOf(Menu("Android"), Menu("IOS"), Menu("微信小程序"), Menu("HTML程序"))
 
-           mutilAdapter.data(datas) {
-               update(0,R.layout.red_layout) //设置第一个元素类型为red_layout
-               update(0..1,R.layout.yellow_layout) //设置0 到 1的类型为yellow_layout，如果之前设置过0，会覆盖之前的设置的类型
-               update(2,R.layout.blue_layout)
-               update(3,R.layout.green_layout)
-               insert(2,R.layout.red_layout,"Python")//在第2个位置后插入一个red_layout类型数据,
-           }
+                   //根据数据中某一字段来判断选择布局
+                   MISCAdapter.data(datas) {
+                       if (it.type == 1) {
+                           addData(R.layout.content_item1, it)
+                       } else {
+                           addData(R.layout.content_item, it)
+                       }
+                   }
+           - 2. 数据不同，布局也不同
 
-           // 对新增red_layout类型数据单独设置，新数据使用backupData字段，因为新数据类型不确定
-           mutilAdapter.bindData(R.layout.red_layout){
-              type, vh, data, backupData ->
-              backupData?.let {
-                  vh.itemView.tv_item.text = backupData as String
-              }
-           }
-           // 对原始旧数据重新设置，原始数据使用data字段
-           mutilAdapter.bindData(R.layout.green_layout){
-              type, vh, data, backupData ->
-              data?.let {
-                  vh.itemView.tv_item.text = "新·"+data.name
-              }
-           }
+                   MISCAdapter.addOtherData(0,R.layout.first_menu,Menu())
+                   //添加其他类型数据
+                   MISCAdapter.addOtherData(1,R.layout.horization_list,HorizationBean(horizationDatas))
 
-           mutilAdapter into recyclerView
+                   //给新数据赋值
+                   MISCAdapter.bindData(R.layout.horization_list) { type, vh, data, backupData ->
+                       bindHorizationList(vh, backupData)
+                   }
+
+                   MISCAdapter into recyclerView
 
  ### 多布局 实现主要是通过update来单个和批量设置数据类型，使用insert可以在指定位置插入一条新的数据，可以指定类型
         

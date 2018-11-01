@@ -20,6 +20,9 @@ var MISCAdapter: KotlinAdapter<ImageBean> = KAdapterFactory.KAdapter {
             R.layout.content_item
         }
         layout {
+            R.layout.content_item1
+        }
+        layout {
             R.layout.first_menu
         }
     }

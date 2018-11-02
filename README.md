@@ -164,7 +164,7 @@ Usage
                    //添加其他类型数据
                    MISCAdapter.addOtherData(1,R.layout.horization_list,HorizationBean(horizationDatas))
 
-                   //给新数据赋值
+                   //给新数据赋值,当我们添加的数据是新的数据类型，用backupData来获取这个值，而不是data
                    MISCAdapter.bindData(R.layout.horization_list) { type, vh, data, backupData ->
                        bindHorizationList(vh, backupData)
                    }
@@ -172,3 +172,29 @@ Usage
                    MISCAdapter into recyclerView
 
 
+API文档:
+
+    1. 单布局
+
+        layout{} 设置布局
+        data{} 初始化数据
+        bindData{type, vh, data ->} 绑定数据
+        onItemClick{ position, view -> } 设置条目点击事件
+
+        addData(T)新增一条数据
+        addData(index,T)新增一条数据，到指定那个位置
+        addDatas() 新增多条数据
+
+    2. 多布局
+        multiLayout{}设置多布局
+        data(List<T>){ it ->}初始化数据，设置多布局规则
+        bindData{type, vh, data ->} 绑定数据
+        onItemClick{ position, view -> } 设置条目点击事件
+
+        addData(type,T) 新增一条数据
+        addData(index,type,T) 新增一条数据到指定那个位置
+        addDatas(List<T>) 新增多条数据,多布局规则默认和初始化一样
+        addOtherData(position,type,data) 在指定位置，新增一条新布局类型和数据
+
+        给指定类型数据赋值
+        bindData(type) { type, vh, data, backupData ->

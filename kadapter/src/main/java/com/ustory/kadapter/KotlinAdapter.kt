@@ -2,6 +2,7 @@ package com.ustory.koinsample.Adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.method.TextKeyListener.clear
 import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
@@ -22,25 +23,6 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     fun layout(layoutId: () -> Int) {
         mLayout = layoutId()
         mLayoutIds.put(mLayout, mLayout)
-    }
-
-    /**
-     * 添加单个布局
-     */
-    fun singleLayout(layoutId: () -> Int) {
-        mLayout = layoutId()
-        mLayoutIds.put(mLayout, mLayout)
-    }
-
-    /**
-     * 批量添加一个map
-     */
-    fun multiLayout(layoutIds: MutableMap<Int, Int>) {
-        mLayoutIds = layoutIds
-        if (mLayoutIds.size > 0) {
-            var firstKey = mLayoutIds.keys.first()
-            mLayout = mLayoutIds[firstKey]!!
-        }
     }
 
     /**
@@ -71,11 +53,15 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     private var mItemDatas: MutableList<Item<T>> = arrayListOf()
 
+    //存储第一次设置的规则
+    private var defalutRulesFuntion: (MultiDataCreater<T>.(T) -> Unit)? = null
+
     /**
-     * 适配数据
+     * mutilType 适配数据
      */
-    fun data(datas: List<T>, initData:MultiDataCreater<T>.(T) -> Unit) {
-        mDatas.clear()
+    fun data(datas: List<T>, initData: MultiDataCreater<T>.(T) -> Unit) {
+        clear()
+        defalutRulesFuntion = initData
         mOriginData = datas
         var creator = MultiDataCreater<T>()
         datas.forEach {
@@ -83,7 +69,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         }
 
         creator.dataAndTypes.forEach { (type, data) ->
-            mDatas.add(Item(type = type,data = data))
+            mDatas.add(Item(type = type, data = data))
         }
 
         mDatas.forEach {
@@ -98,14 +84,13 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
      * 仅更新数据，单布局使用此方法，如果和类型数据不设置，默认用最后一个设置的layout
      */
     fun data(datas: () -> ArrayList<*>) {
-        mDatas.clear()
+        clear()
         var tempdatas = datas() as ArrayList<T?>
         mOriginData = tempdatas
         tempdatas.forEach {
             mDatas.add(Item(data = it, type = mLayout))
             mTypes.add(mLayout)
         }
-
 
     }
 
@@ -132,15 +117,15 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
      * 指定位置添加数据
      */
     fun addData(index: Int, type: Int, data: T) {
-        mDatas.add(index,Item(data = data, type = type))
-        mTypes.add(index,type)
+        mDatas.add(index, Item(data = data, type = type))
+        mTypes.add(index, type)
     }
 
     /**
      * 指定位置添加数据
      */
-    fun addOtherData(index: Int, type: Int, backupData:Any) {
-        if(isMultiLayoutMode()) {
+    fun addOtherData(index: Int, type: Int, backupData: Any) {
+        if (isMultiLayoutMode()) {
             mDatas.add(index, Item(type = type, backupData = backupData))
             mTypes.add(index, type)
         }
@@ -148,15 +133,47 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     /**
      * 新增mutilType数据在尾部
-     * notice 多个布局模式调用时，会显示第一个布局的样式
-     *
      */
-    fun addDatas(datas: ArrayList<T>) {
-        if (!isMultiLayoutMode()) {
+    fun addDatas(datas: List<T>) {
+        if (isMultiLayoutMode()) {
+            var creator = MultiDataCreater<T>()
+            if (defalutRulesFuntion != null) {
+                datas.forEach {
+                    defalutRulesFuntion!!.invoke(creator,it)
+                }
+
+                creator.dataAndTypes.forEach { (type, data) ->
+                    mDatas.add(Item(type = type?:mLayout, data = data))
+                    mTypes.add(type?:mLayout)
+                }
+
+            }
+        } else {
             datas.forEach {
                 mDatas.add(Item(data = it, type = mLayout))
                 mTypes.add(mLayout)
             }
+        }
+    }
+
+    /***
+     * mutilType新增数据
+     */
+    fun addDatas(datas: ArrayList<T>, initData: MultiDataCreater<T>.(T) -> Unit) {
+        var creator = MultiDataCreater<T>()
+        datas.forEach {
+            creator.initData(it)
+        }
+
+        creator.dataAndTypes.forEach { (type, data) ->
+            mDatas.add(Item(type = type, data = data))
+        }
+
+        mDatas.forEach {
+            if (it.type == null) {
+                it.type = mLayout//最后一个
+            }
+            mTypes.add(it.type!!)
         }
     }
 
@@ -217,6 +234,14 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
 
     fun into(recyclerView: () -> RecyclerView) {
         recyclerView().adapter = this
+    }
+
+    private fun clear() {
+        mDatas.clear()
+        mTypes.clear()
+        interceptViews.clear()
+        defalutRulesFuntion = null
+
     }
 
     private fun isMultiLayoutMode(): Boolean {

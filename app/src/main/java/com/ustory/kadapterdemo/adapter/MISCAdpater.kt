@@ -5,6 +5,7 @@ import com.ustory.kadapterdemo.R
 import com.ustory.kadapterdemo.bean.ImageBean
 import com.ustory.koinsample.Adapter.KAdapterFactory
 import com.ustory.koinsample.Adapter.KotlinAdapter
+import kotlinx.android.synthetic.main.content_item.view.*
 import kotlinx.android.synthetic.main.list_item.view.*
 
 var MISCAdapter: KotlinAdapter<ImageBean> = KAdapterFactory.KAdapter {
@@ -29,8 +30,9 @@ var MISCAdapter: KotlinAdapter<ImageBean> = KAdapterFactory.KAdapter {
 
 
     bindData { type, vh, data ->
-        when (type) {
-
+        when(type){
+            R.layout.content_item1->vh.itemView.tv_text.text = data.title
+            R.layout.content_item->vh.itemView.tv_text.text = data.title
         }
     }
 }

@@ -8,6 +8,7 @@ import android.provider.SyncStateContract.Helpers.update
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.ImageButton
+import com.ustory.kadapter.MultiDataCreater
 import com.ustory.kadapterdemo.Menu
 import com.ustory.kadapterdemo.R
 import com.ustory.kadapterdemo.R.id.recyclerView
@@ -57,6 +58,10 @@ class MutilLayoutDemo3 : AppCompatActivity() {
         MISCAdapter.bindData(R.layout.horization_list) { type, vh, data, backupData ->
             bindHorizationList(vh, backupData)
         }
+        MISCAdapter.addData(R.layout.content_item, ImageBean("Image7"))
+
+        MISCAdapter.addDatas(datas)
+
 
         MISCAdapter into recyclerView
 
@@ -69,6 +74,8 @@ class MutilLayoutDemo3 : AppCompatActivity() {
 
 
     }
+
+
 
     private fun bindHorizationList(vh: KotlinAdapter.ViewHolder, backupData: Any?) {
         val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -90,4 +97,6 @@ class MutilLayoutDemo3 : AppCompatActivity() {
         datas.add(ImageBean("image5"))
         return datas
     }
+
+
 }

@@ -109,4 +109,12 @@
   <com.google.android.ads/>
   <androidx.biometric/>
   <androidx.concurrent/>
+  <androidx.activity/>
+  <com.android.tools.apkparser/>
+  <com.android.tools.pixelprobe/>
+  <androidx.textclassifier/>
+  <androidx.remotecallback/>
+  <com.android.tools.chunkio/>
+  <com.android.tools.fakeadbserver/>
+  <androidx.savedstate/>
 </metadata>

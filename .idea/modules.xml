@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/KAdapter.iml" filepath="$PROJECT_DIR$/KAdapter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kadapter/kadapter.iml" filepath="$PROJECT_DIR$/kadapter/kadapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KAdapter.iml" filepath="$PROJECT_DIR$/KAdapter.iml" group="KAdapter" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="KAdapter/app" />
+      <module fileurl="file://$PROJECT_DIR$/kadapter/kadapter.iml" filepath="$PROJECT_DIR$/kadapter/kadapter.iml" group="KAdapter/kadapter" />
     </modules>
   </component>
 </project>

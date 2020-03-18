@@ -39,13 +39,17 @@ class MutilLayoutDemo1 : AppCompatActivity() {
             }
         }
 
-//        mutilAdapter.data(datas) {
-//            update(0,R.layout.red_layout) //设置第一个元素类型为red_layout
-//            update(0..1,R.layout.yellow_layout) //设置0 到 1的类型为yellow_layout，如果之前设置过0，会覆盖之前的设置的类型
-//            update(2,R.layout.blue_layout)
-//            update(3,R.layout.green_layout)
-//            insert(2,R.layout.red_layout,"Python")//在第2个位置后插入一个red_layout类型数据,
-//        }
+        mutilAdapter.data(datas){
+            if (it.name.equals("Android")){
+                addData(R.layout.green_layout,it)
+            }else if(it.name.equals("IOS")){
+                addData(R.layout.red_layout,it)
+            }else if(it.name.equals("微信小程序")){
+                addData(R.layout.yellow_layout,it)
+            }else{
+                addData(R.layout.blue_layout,it)
+            }
+        }
 
         mutilAdapter into recyclerView
     }

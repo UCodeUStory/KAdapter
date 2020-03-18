@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.4"
+        versionName "1.0.5"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -33,7 +33,7 @@ android {
 }
 
 task makeJar(type: Jar) {
-    archiveName 'kadapter-1.0.4-sources.jar'
+    archiveName 'kadapter-1.0.5-sources.jar'
     //添加项目中java生成的class文件目录
     from('build/intermediates/classes/release/')
     //添加项目中kotlin生成的class文件目录
@@ -88,7 +88,7 @@ group = "cn.ustory.qy"
 //发布到JCenter上的项目名字，必须填写
 def libName = "kadapter"
 // 版本号，下次更新是只需要更改版本号即可
-version = "1.0.4"
+version = "1.0.5"
 /**  上面配置后上传至jcenter后的编译路径是这样的： compile 'cn.bluemobi.dylan:sqlitelibrary:1.0'  **/
 
 //生成源文件
@@ -205,6 +205,8 @@ bintray {
 }
 
 /**
+ *   上传流程
+ *   修改version code
  *  ./gradlew build
  * ./gradlew install
    ./gradlew bintrayUpload

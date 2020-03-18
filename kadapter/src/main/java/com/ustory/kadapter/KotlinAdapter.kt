@@ -28,7 +28,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     /**
      * 默认以id为类型key 批量添加
      */
-    fun multiLayout(layoutIds: ArrayList<Int>) {
+    fun multiLayout(layoutIds: List<Int>) {
         layoutIds.forEach {
             mLayoutIds.put(it, it)
         }
@@ -83,7 +83,7 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
     /**
      * 仅更新数据，单布局使用此方法，如果和类型数据不设置，默认用最后一个设置的layout
      */
-    fun data(datas: () -> ArrayList<*>) {
+    fun data(datas: () -> List<*>) {
         clear()
         var tempdatas = datas() as ArrayList<T?>
         mOriginData = tempdatas
@@ -156,10 +156,11 @@ abstract class KotlinAdapter<T> : RecyclerView.Adapter<KotlinAdapter.ViewHolder>
         }
     }
 
+
     /***
      * mutilType新增数据
      */
-    fun addDatas(datas: ArrayList<T>, initData: MultiDataCreater<T>.(T) -> Unit) {
+    fun addDatas(datas: List<T>, initData: MultiDataCreater<T>.(T) -> Unit) {
         var creator = MultiDataCreater<T>()
         datas.forEach {
             creator.initData(it)
